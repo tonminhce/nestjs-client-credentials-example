@@ -10,80 +10,83 @@
     url      = env("DATABASE_URL")
   }
 
-
-  //Model Article
-  model Article {
-    id          Int      @id @default(autoincrement())
-    title       String   @unique
-    description String?
-    body        String
-    published   Boolean  @default(false)
-    createdAt   DateTime @default(now())
-    updatedAt   DateTime @updatedAt
-    author      UserArticles?    @relation(fields: [authorId], references: [id])
-    authorId    Int?
-  }
-
-  //Model UserArticles
-  model UserArticles {
-    id        Int       @id @default(autoincrement())
-    name      String?
-    email     String    @unique
-    password  String
-    createdAt DateTime  @default(now())
-    updatedAt DateTime  @updatedAt
-    articles  Article[]
-  }
-
-  //Model UserTest
-  model UserTest {
+  //Model ShopManager
+  model ShopManager {
     id        Int       @id @unique @default(autoincrement())
     name      String?
     email     String    @unique
-    password  String
     phone     String
     createdAt DateTime  @default(now())
     updatedAt DateTime  @updatedAt
-    user_role     UserRole[]    
+    shops     Shop[]    
   }
 
-  //Model Role
-  model Role {
+  //Model Shop
+  model Shop {
     id             Int       @id @default(autoincrement())
-    roleName       String?
+    shopManager_id       Int
     description    String
+    name      String?
+    address     String    @unique
+    phone     String
     createdAt      DateTime  @default(now())
     updatedAt      DateTime  @updatedAt
-    user_roles     UserRole[]
-    role_permission RolePermission []
+    shopManager    ShopManager @relation(fields: [shopManager_id], references: [id])
+    staffs    Staff[]
+
   }
 
-  //Model UserRole
-  model UserRole {
-    id       Int      @id @default(autoincrement())
-    userId   Int
-    roleId   Int
-    user     UserTest @relation(fields: [userId], references: [id])
-    role     Role     @relation(fields: [roleId], references: [id])
-
-    @@unique([userId, roleId])
-  }
-
-  //Model Permission
-  model Permission{
-    id  Int @id @default(autoincrement())
-    title String?
-    description String
+  //Staff
+  model Staff {
+    id             Int       @id @default(autoincrement())
+    shop_id       Int
+    name      String?
+    salary     Float    
+    phone     String
     createdAt      DateTime  @default(now())
     updatedAt      DateTime  @updatedAt
-    role_permission RolePermission []
+    shop    Shop @relation(fields: [shop_id], references: [id])
+    staff_shift Staff_Shift[]
+
   }
 
-  model RolePermission{
-    id Int @id @default(autoincrement())
-    roleId Int
-    permissionId Int
-    role     Role     @relation(fields: [roleId], references: [id])
-    permission Permission @relation(fields: [permissionId], references: [id])
-    @@unique([roleId, permissionId])
+  //Shift
+  model Shift {
+    id             Int       @id @default(autoincrement())
+    start_time DateTime
+    end_time DateTime
+    report     String
+    createdAt      DateTime  @default(now())
+    updatedAt      DateTime  @updatedAt
+    staff_shift Staff_Shift[]
+
   }
+
+  //Staff_Shift
+  model Staff_Shift {
+    id             Int       @id @default(autoincrement())
+    staff_id Int
+    shift_id Int
+    report     String
+    createdAt      DateTime  @default(now())
+    updatedAt      DateTime  @updatedAt
+    staff    Staff @relation(fields: [staff_id], references: [id])
+    shift    Shift @relation(fields: [shift_id], references: [id])
+    attendance Attendance[]
+
+  }
+  
+  //Enums Status (Check_in, Check_out)
+  enum AttendanceStatus {
+    CHECK_IN
+    CHECK_OUT
+  }
+  //Staff_Shift
+  model Attendance {
+    id             Int       @id @default(autoincrement())
+    staff_shift_id Int
+    status  AttendanceStatus
+    createdAt      DateTime  @default(now())
+    staff_shift Staff_Shift @relation(fields: [staff_shift_id], references: [id])
+  }
+
