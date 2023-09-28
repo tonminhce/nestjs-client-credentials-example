@@ -20,7 +20,7 @@ The Client Credentials Flow is useful in scenarios where an application or servi
 
 Security precautions, such as securing the client secret and using HTTPS for communication, are essential to protect against unauthorized access and token leakage.
 The client credentials flow for this code:
-![image (3)](https://github.com/tonminhce/nestjs-client-credentials-example/assets/87883380/d9738c70-98a5-4bb6-b8cc-91df29da7e0f)
+![image](https://github.com/tonminhce/nestjs-client-credentials-example/assets/87883380/3df796e0-61a7-4706-b0bc-ba4e0534c748)
 
 
 
